@@ -1,15 +1,21 @@
 #!/usr/bin/env ruby
 
-database = ARGV.shift
-username = ARGV.shift
-password = ARGV.shift
-end_of_iter = ARGV.shift
+require 'optparse'
 
-if end_of_iter.nil?
-  backup_file = database + Time.now.strftime("%Y%m%d")
-else
-  backup_file = database + end_of_iter
+options = {}
+option_parser = OptionParser.new do |opts|
+  opts.on("-i", "--iteration") do
+    options[:iteration] = true
+  end
+
+  opts.on("-u USER") do |user|
+    options[:user] = user
+  end
+
+  opts.on("-p PASSWORD") do |password|
+    options[:password] = password
+  end
 end
 
-`mysqldump -u#{username} -p#{password} #{database} > #{backup_file}.sql`
-`gzip #{backup_file}.sql`
+option_parser.parse!
+puts options.inspect
